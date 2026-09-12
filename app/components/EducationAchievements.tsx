@@ -1,153 +1,137 @@
 "use client";
+import { useEffect, useRef } from "react";
 
-import { GraduationCap, Award, ExternalLink, BookOpen, Calendar, MapPin, Trophy } from "lucide-react";
-import { portfolioData } from "../data/portfolioData";
+const education = [
+  {
+    degree: "B.Tech in Computer Science & Engineering",
+    school: "University of Petroleum & Energy Studies (UPES)",
+    period: "2022 – 2026",
+    cgpa: "8.79",
+    accent: "lavender",
+  },
+  {
+    degree: "Senior Secondary (Class XII)",
+    school: "Central Board of Secondary Education",
+    period: "2022",
+    cgpa: "85%",
+    accent: "mint",
+  },
+];
+
+const certifications = [
+  { name: "AWS Cloud Practitioner Essentials", issuer: "Amazon Web Services", year: "2024", accent: "lemon" },
+  { name: "Meta Back-End Developer", issuer: "Meta (Coursera)", year: "2024", accent: "blush" },
+  { name: "Python for Everybody Specialization", issuer: "University of Michigan", year: "2023", accent: "sky" },
+  { name: "The Complete Web Developer", issuer: "Udemy", year: "2023", accent: "peach" },
+];
+
+const achievements = [
+  { emoji: "🏆", title: "Hackathon Winner", desc: "Smart India Hackathon 2023 — AI Track" },
+  { emoji: "⭐", title: "Open Source", desc: "10+ PRs merged across public repos" },
+  { emoji: "📚", title: "Technical Writing", desc: "Published 5+ articles on dev.to" },
+  { emoji: "🎤", title: "Tech Talk", desc: "Speaker at UPES TechFest 2024" },
+];
+
+const accentMap: Record<string, { tag: string; dot: string }> = {
+  lavender: { tag: "tag-lavender", dot: "#C4B5FD" },
+  mint:     { tag: "tag-mint",     dot: "#6EE7B7" },
+  blush:    { tag: "tag-blush",    dot: "#F9A8D4" },
+  sky:      { tag: "tag-sky",      dot: "#BAE6FD" },
+  lemon:    { tag: "tag-lemon",    dot: "#FDE68A" },
+  peach:    { tag: "tag-peach",    dot: "#FCA5A5" },
+};
 
 export default function EducationAchievements() {
-  const { education, achievements, certifications } = portfolioData;
+  const sectionRef = useRef<HTMLElement>(null);
+
+  useEffect(() => {
+    const section = sectionRef.current;
+    if (!section) return;
+    const items = section.querySelectorAll<HTMLElement>(".reveal, .reveal-left, .reveal-right");
+    const obs = new IntersectionObserver(
+      (entries) => entries.forEach((e) => { if (e.isIntersecting) { (e.target as HTMLElement).classList.add("visible"); obs.unobserve(e.target); } }),
+      { threshold: 0.08, rootMargin: "0px 0px -20px 0px" }
+    );
+    items.forEach((el) => obs.observe(el));
+    return () => obs.disconnect();
+  }, []);
 
   return (
-    <section id="education" className="relative w-full py-20 px-5 sm:px-10">
-      <div className="mx-auto max-w-6xl">
-        {/* Section Header */}
-        <div className="mb-14 text-center">
-          <h2 className="text-xs sm:text-sm font-semibold uppercase tracking-[0.2em] text-pink-400">
-            Background &amp; Recognition
-          </h2>
-          <h3 className="mt-2 text-3xl sm:text-4xl lg:text-5xl font-extrabold text-white">
-            Education &amp; <span className="gradient-text-vibrant">Achievements</span>
-          </h3>
-          <p className="mt-3 max-w-2xl mx-auto text-sm sm:text-base text-zinc-400">
-            Formal engineering degree credentials, competitive hackathon recognitions, and verified university certifications.
-          </p>
-        </div>
+    <section id="education" ref={sectionRef} className="py-28 px-5 max-w-6xl mx-auto">
+      {/* Header */}
+      <div className="reveal mb-14">
+        <span className="section-label tag-lemon rounded-full px-3 py-1 inline-block mb-4">Education</span>
+        <h2 className="text-4xl md:text-5xl font-bold tracking-tight">
+          Academic <span className="text-gradient-warm">Journey</span>
+        </h2>
+      </div>
 
-        {/* Top Split: Education & Hackathon / Leadership Highlights */}
-        <div className="grid grid-cols-1 gap-8 lg:grid-cols-2 mb-12">
-          {/* Education Card */}
-          <div className="glass-card glass-card-hover rounded-3xl p-6 sm:p-8 border border-white/10 flex flex-col justify-between">
-            <div>
-              <div className="flex items-center gap-3 mb-4">
-                <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-purple-500/10 border border-purple-500/20 text-purple-400">
-                  <GraduationCap className="h-6 w-6" />
-                </div>
-                <div>
-                  <h4 className="text-xl font-bold text-white">
-                    {education.institution}
-                  </h4>
-                  <div className="text-sm font-semibold text-purple-400">
-                    {education.degree}
-                  </div>
-                </div>
-              </div>
-
-              <div className="flex items-center gap-4 text-xs text-zinc-400 border-b border-white/10 pb-4 mb-5">
-                <span className="flex items-center gap-1">
-                  <Calendar className="h-3.5 w-3.5 text-zinc-500" />
-                  {education.period}
-                </span>
-                <span className="flex items-center gap-1">
-                  <MapPin className="h-3.5 w-3.5 text-zinc-500" />
-                  {education.location}
-                </span>
-              </div>
-
-              <div>
-                <div className="flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wider text-zinc-400 mb-3">
-                  <BookOpen className="h-3.5 w-3.5 text-pink-400" />
-                  <span>Relevant Coursework</span>
-                </div>
-                <div className="flex flex-wrap gap-2">
-                  {education.coursework.map((course) => (
-                    <span
-                      key={course}
-                      className="rounded-lg border border-white/10 bg-white/[0.03] px-3 py-1 text-xs font-medium text-zinc-300"
-                    >
-                      {course}
-                    </span>
-                  ))}
-                </div>
-              </div>
-            </div>
-          </div>
-
-          {/* Hackathons & Club Leadership */}
-          <div className="glass-card glass-card-hover rounded-3xl p-6 sm:p-8 border border-white/10 flex flex-col justify-between">
-            <div>
-              <div className="flex items-center gap-3 mb-6">
-                <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-pink-500/10 border border-pink-500/20 text-pink-400">
-                  <Trophy className="h-6 w-6" />
-                </div>
-                <div>
-                  <h4 className="text-xl font-bold text-white">
-                    Honors &amp; Hackathons
-                  </h4>
-                  <div className="text-sm font-semibold text-pink-400">
-                    Competitive Distinctions
-                  </div>
-                </div>
-              </div>
-
-              <div className="space-y-4">
-                {achievements.map((ach, idx) => (
-                  <div
-                    key={idx}
-                    className="rounded-2xl border border-white/10 bg-white/[0.02] p-4 transition hover:border-pink-500/30"
-                  >
-                    <div className="flex items-start justify-between gap-2">
-                      <div className="font-bold text-sm text-white">
-                        {ach.title}
-                      </div>
-                      <span className="rounded-full border border-pink-500/30 bg-pink-500/10 px-2.5 py-0.5 text-[10px] font-semibold text-pink-300">
-                        {ach.tag}
-                      </span>
-                    </div>
-                    <div className="mt-1 text-xs font-medium text-zinc-400">
-                      {ach.event}
-                    </div>
-                    <p className="mt-2 text-xs text-zinc-300 leading-relaxed">
-                      {ach.description}
-                    </p>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* Certifications Sub-Section */}
+      <div className="grid lg:grid-cols-2 gap-10">
+        {/* Education */}
         <div>
-          <div className="mb-6 flex items-center justify-between">
-            <h4 className="text-lg font-bold text-white flex items-center gap-2">
-              <Award className="h-5 w-5 text-orange-400" />
-              <span>Verified Certifications</span>
-            </h4>
-            <span className="text-xs text-zinc-400">Official Credentials</span>
+          <div className="space-y-4 mb-10">
+            {education.map((e, i) => {
+              const ac = accentMap[e.accent];
+              return (
+                <div key={e.school} className={`reveal delay-${i + 1} glass-pastel rounded-2xl p-6 card-hover`}>
+                  <div className="flex items-start gap-4">
+                    <div className="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0"
+                      style={{ background: `rgba(${ac.dot.replace("#","").match(/.{2}/g)?.map(h=>parseInt(h,16)).join(",")},0.12)` }}>
+                      <span className="text-lg">🎓</span>
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <h3 className="text-sm font-semibold text-white/85 leading-snug mb-1">{e.degree}</h3>
+                      <p className="text-xs text-white/45 mb-2">{e.school}</p>
+                      <div className="flex items-center gap-3">
+                        <span className={`text-xs px-2.5 py-0.5 rounded-full font-mono ${ac.tag}`}>{e.period}</span>
+                        <span className={`text-xs px-2.5 py-0.5 rounded-full font-semibold ${ac.tag}`}>
+                          CGPA: {e.cgpa}
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              );
+            })}
           </div>
 
-          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
-            {certifications.map((cert, idx) => (
-              <a
-                key={idx}
-                href={cert.credentialUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="glass-card glass-card-hover group rounded-2xl p-5 border border-white/10 transition-all duration-300 flex flex-col justify-between hover:border-orange-500/40"
-              >
-                <div>
-                  <div className="flex items-center justify-between text-[11px] font-semibold text-orange-400 mb-2">
-                    <span>{cert.badgeText}</span>
-                    <ExternalLink className="h-3.5 w-3.5 opacity-60 group-hover:opacity-100 transition" />
-                  </div>
-                  <h5 className="text-sm font-bold text-white group-hover:text-orange-300 transition line-clamp-2">
-                    {cert.title}
-                  </h5>
-                </div>
-                <div className="mt-4 text-xs text-zinc-400">
-                  {cert.issuer}
-                </div>
-              </a>
+          {/* Achievements */}
+          <h3 className="reveal text-xl font-bold text-white/80 mb-5">Achievements</h3>
+          <div className="grid grid-cols-2 gap-3">
+            {achievements.map((a, i) => (
+              <div key={a.title} className={`reveal delay-${i + 1} glass-pastel rounded-xl p-4 card-hover`}>
+                <span className="text-2xl block mb-2">{a.emoji}</span>
+                <h4 className="text-xs font-semibold text-white/80 mb-1">{a.title}</h4>
+                <p className="text-[11px] text-white/40 leading-relaxed">{a.desc}</p>
+              </div>
             ))}
+          </div>
+        </div>
+
+        {/* Certifications */}
+        <div>
+          <h3 className="reveal text-xl font-bold text-white/80 mb-5">Certifications</h3>
+          <div className="space-y-3">
+            {certifications.map((c, i) => {
+              const ac = accentMap[c.accent];
+              return (
+                <div key={c.name} className={`reveal delay-${i + 1} glass-pastel rounded-xl p-5 card-hover flex items-center gap-4`}>
+                  <div
+                    className="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0"
+                    style={{ background: `rgba(${ac.dot.replace("#","").match(/.{2}/g)?.map(h=>parseInt(h,16)).join(",")},0.1)` }}
+                  >
+                    <svg className="w-5 h-5" style={{ color: ac.dot }} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}>
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z" />
+                    </svg>
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <h4 className="text-sm font-medium text-white/80 truncate">{c.name}</h4>
+                    <p className="text-xs text-white/40">{c.issuer}</p>
+                  </div>
+                  <span className={`text-xs font-mono px-2 py-0.5 rounded-full flex-shrink-0 ${ac.tag}`}>{c.year}</span>
+                </div>
+              );
+            })}
           </div>
         </div>
       </div>

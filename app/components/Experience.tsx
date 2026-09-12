@@ -1,100 +1,136 @@
 "use client";
+import { useEffect, useRef } from "react";
 
-import Image from "next/image";
-import { ExternalLink, Calendar, MapPin, CheckCircle2 } from "lucide-react";
-import { portfolioData } from "../data/portfolioData";
+const experiences = [
+  {
+    role: "Web Developer Intern",
+    company: "Zidio Development",
+    period: "Jun 2024 – Aug 2024",
+    type: "Internship",
+    accent: "lavender",
+    points: [
+      "Built and shipped 3 full-stack features using React + Node.js, reducing load time by 30%",
+      "Integrated RESTful APIs with PostgreSQL backend, handling 10k+ daily requests",
+      "Collaborated in an agile team of 8 engineers with weekly sprint reviews",
+      "Implemented JWT-based auth system improving security posture",
+    ],
+    tags: ["React", "Node.js", "PostgreSQL", "REST APIs"],
+  },
+  {
+    role: "Full Stack Developer Intern",
+    company: "Bharat Intern",
+    period: "Dec 2023 – Feb 2024",
+    type: "Internship",
+    accent: "mint",
+    points: [
+      "Developed a real-time chat application using Socket.io and MongoDB",
+      "Built responsive dashboards with React and Tailwind CSS",
+      "Implemented file upload/download service with AWS S3 integration",
+    ],
+    tags: ["Socket.io", "MongoDB", "React", "AWS S3"],
+  },
+  {
+    role: "Frontend Developer Intern",
+    company: "CodSoft",
+    period: "Aug 2023 – Oct 2023",
+    type: "Internship",
+    accent: "blush",
+    points: [
+      "Revamped landing pages increasing conversion rate by 18%",
+      "Reduced CSS bundle size by 40% through component extraction",
+      "Mentored 2 junior interns on React best practices",
+    ],
+    tags: ["React", "CSS", "JavaScript", "Figma"],
+  },
+];
+
+const accentColorMap: Record<string, { dot: string; glow: string; tag: string }> = {
+  lavender: { dot: "#C4B5FD", glow: "rgba(196,181,253,0.15)", tag: "tag-lavender" },
+  mint: { dot: "#6EE7B7", glow: "rgba(110,231,183,0.12)", tag: "tag-mint" },
+  blush: { dot: "#F9A8D4", glow: "rgba(249,168,212,0.12)", tag: "tag-blush" },
+};
 
 export default function Experience() {
+  const sectionRef = useRef<HTMLElement>(null);
+
+  useEffect(() => {
+    const section = sectionRef.current;
+    if (!section) return;
+    const items = section.querySelectorAll<HTMLElement>(".reveal, .reveal-left, .reveal-right");
+    const obs = new IntersectionObserver(
+      (entries) => entries.forEach((e) => { if (e.isIntersecting) { (e.target as HTMLElement).classList.add("visible"); obs.unobserve(e.target); } }),
+      { threshold: 0.1, rootMargin: "0px 0px -30px 0px" }
+    );
+    items.forEach((el) => obs.observe(el));
+    return () => obs.disconnect();
+  }, []);
+
   return (
-    <section id="experience" className="relative w-full py-20 px-5 sm:px-10">
-      <div className="mx-auto max-w-6xl">
-        {/* Section Header */}
-        <div className="mb-14 text-center">
-          <h2 className="text-xs sm:text-sm font-semibold uppercase tracking-[0.2em] text-pink-400">
-            Work History
-          </h2>
-          <h3 className="mt-2 text-3xl sm:text-4xl lg:text-5xl font-extrabold text-white">
-            Engineering <span className="gradient-text-vibrant">Experience</span>
-          </h3>
-          <p className="mt-3 max-w-2xl mx-auto text-sm sm:text-base text-zinc-400">
-            Real-world software engineering internships delivering enterprise ERP automation, WMS architectures, and full-stack platforms.
-          </p>
-        </div>
+    <section id="experience" ref={sectionRef} className="py-28 px-5 max-w-6xl mx-auto">
+      {/* Header */}
+      <div className="reveal mb-14">
+        <span className="section-label tag-blush rounded-full px-3 py-1 inline-block mb-4">Experience</span>
+        <h2 className="text-4xl md:text-5xl font-bold tracking-tight">
+          Where I&apos;ve <span className="text-gradient">Worked</span>
+        </h2>
+      </div>
 
-        {/* Experience Cards Grid with Moving Border Effect */}
-        <div className="grid grid-cols-1 gap-8 lg:grid-cols-2">
-          {portfolioData.experiences.map((exp) => (
-            <div
-              key={exp.id}
-              className="relative group overflow-hidden rounded-3xl p-[1.5px] transition-all duration-300 hover:scale-[1.01]"
-            >
-              {/* Rotating Illuminated Moving Border Beam */}
-              <div className="absolute inset-[-100%] animate-spin-slow bg-[conic-gradient(from_90deg_at_50%_50%,#8b5cf6_0%,#ec4899_50%,#fb923c_100%)] opacity-70 group-hover:opacity-100 transition-opacity" />
+      {/* Timeline */}
+      <div className="relative">
+        {/* Vertical line */}
+        <div className="absolute left-5 md:left-8 top-0 bottom-0 w-px timeline-line opacity-30 rounded-full" />
 
-              {/* Inner Card Content */}
-              <div className="relative flex h-full flex-col justify-between rounded-3xl bg-[#0c0a18]/95 p-6 sm:p-8 backdrop-blur-2xl border border-white/10">
-                <div>
-                  {/* Card Header Row */}
-                  <div className="flex items-start justify-between gap-4">
-                    <div className="flex items-center gap-4">
-                      <div className="relative flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl bg-gradient-to-br from-purple-600/20 via-pink-600/20 to-orange-500/20 border border-white/10 p-2.5">
-                        <Image
-                          src={exp.icon}
-                          alt={exp.company}
-                          width={48}
-                          height={48}
-                          className="h-full w-full object-contain"
-                        />
-                      </div>
-                      <div>
-                        <h4 className="text-lg sm:text-xl font-bold text-white group-hover:text-purple-300 transition">
-                          {exp.role}
-                        </h4>
-                        <div className="text-sm font-semibold text-pink-400">
-                          {exp.company}
-                        </div>
-                      </div>
+        <div className="flex flex-col gap-10">
+          {experiences.map((exp, i) => {
+            const colors = accentColorMap[exp.accent] ?? accentColorMap.lavender;
+            return (
+              <div
+                key={exp.company}
+                className={`reveal delay-${i + 1} relative pl-16 md:pl-24`}
+              >
+                {/* Timeline dot */}
+                <div
+                  className="absolute left-[13px] md:left-[21px] top-5 w-5 h-5 rounded-full border-2 border-[#0A0A0F] transition-all duration-500"
+                  style={{ background: colors.dot, boxShadow: `0 0 16px ${colors.glow}` }}
+                />
+
+                {/* Card */}
+                <div
+                  className="glass-pastel rounded-2xl p-6 md:p-8 card-hover"
+                  style={{ borderColor: `rgba(${exp.accent === "lavender" ? "196,181,253" : exp.accent === "mint" ? "110,231,183" : "249,168,212"},0.15)` }}
+                >
+                  {/* Top row */}
+                  <div className="flex flex-wrap items-start justify-between gap-3 mb-4">
+                    <div>
+                      <h3 className="text-lg font-bold text-white/90">{exp.role}</h3>
+                      <p className="text-sm font-medium mt-0.5" style={{ color: colors.dot }}>{exp.company}</p>
                     </div>
-
-                    {/* Verified Certificate Link */}
-                    {exp.certificateUrl && (
-                      <a
-                        href={exp.certificateUrl}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="inline-flex shrink-0 items-center gap-1.5 rounded-full border border-purple-500/30 bg-purple-500/10 px-3 py-1 text-xs font-semibold text-purple-200 transition hover:border-purple-400 hover:bg-purple-500/20 hover:text-white"
-                      >
-                        <span>Certificate</span>
-                        <ExternalLink className="h-3 w-3" />
-                      </a>
-                    )}
-                  </div>
-
-                  {/* Meta Details Strip */}
-                  <div className="mt-4 flex flex-wrap items-center gap-4 text-xs text-zinc-400 border-b border-white/10 pb-4">
-                    <div className="flex items-center gap-1.5">
-                      <Calendar className="h-3.5 w-3.5 text-zinc-500" />
-                      <span>{exp.period}</span>
-                    </div>
-                    <div className="flex items-center gap-1.5">
-                      <MapPin className="h-3.5 w-3.5 text-zinc-500" />
-                      <span>{exp.location}</span>
+                    <div className="text-right">
+                      <span className={`text-xs rounded-full px-3 py-1 font-medium ${colors.tag}`}>{exp.type}</span>
+                      <p className="text-xs text-white/35 font-mono mt-1.5">{exp.period}</p>
                     </div>
                   </div>
 
-                  {/* Highlights Bullet List */}
-                  <ul className="mt-5 space-y-3 text-sm text-zinc-300">
-                    {exp.highlights.map((bullet, i) => (
-                      <li key={i} className="flex items-start gap-2.5">
-                        <CheckCircle2 className="h-4 w-4 shrink-0 text-pink-400 mt-0.5" />
-                        <span className="leading-relaxed">{bullet}</span>
+                  {/* Bullets */}
+                  <ul className="space-y-2 mb-5">
+                    {exp.points.map((pt) => (
+                      <li key={pt} className="flex items-start gap-2.5 text-sm text-white/55">
+                        <span className="mt-1.5 w-1.5 h-1.5 rounded-full flex-shrink-0" style={{ background: colors.dot }} />
+                        {pt}
                       </li>
                     ))}
                   </ul>
+
+                  {/* Tags */}
+                  <div className="flex flex-wrap gap-2">
+                    {exp.tags.map((tag) => (
+                      <span key={tag} className={`text-xs px-3 py-1 rounded-full font-mono ${colors.tag}`}>{tag}</span>
+                    ))}
+                  </div>
                 </div>
               </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
       </div>
     </section>

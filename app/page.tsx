@@ -1,3 +1,5 @@
+import CustomCursor from "./components/CustomCursor";
+import ScrollProgress from "./components/ScrollProgress";
 import Navbar from "./components/Navbar";
 import Hero from "./components/Hero";
 import AboutBento from "./components/AboutBento";
@@ -6,33 +8,23 @@ import Experience from "./components/Experience";
 import Projects from "./components/Projects";
 import EducationAchievements from "./components/EducationAchievements";
 import ContactFooter from "./components/ContactFooter";
-import BackgroundCanvas from "./components/BackgroundCanvas";
-import CustomCursor from "./components/CustomCursor";
 
 export default function Home() {
   return (
-    <div className="relative min-h-screen w-full bg-[#07070b] text-slate-100 overflow-x-hidden selection:bg-pink-500/30 selection:text-white">
-      {/* Interactive Custom Cursor */}
+    <main className="relative min-h-screen bg-[#0A0A0F]">
+      {/* Global UI Chrome */}
       <CustomCursor />
-
-      {/* Interactive Three.js WebGL Constellation & Geometry */}
-      <BackgroundCanvas />
-
-      {/* Floating Pill Navigation */}
+      <ScrollProgress />
       <Navbar />
 
-      {/* Main Content Flow */}
-      <main className="relative z-10 flex flex-col items-center">
-        <Hero />
-        <AboutBento />
-        <Skills />
-        <Experience />
-        <Projects />
-        <EducationAchievements />
-      </main>
-
-      {/* High-Impact Contact Footer */}
+      {/* Page Sections */}
+      <Hero />
+      <AboutBento />
+      <Skills />
+      <Experience />
+      <Projects />
+      <EducationAchievements />
       <ContactFooter />
-    </div>
+    </main>
   );
 }

@@ -1,99 +1,136 @@
 "use client";
+import { useEffect, useRef, useState } from "react";
 
-import { useState } from "react";
-import { Code2, Server, Database, Cpu, Cloud, Layout, CheckCircle2, Layers } from "lucide-react";
-import { portfolioData } from "../data/portfolioData";
+const categories = [
+  {
+    label: "Languages",
+    accent: "lavender",
+    skills: ["Python", "TypeScript", "JavaScript", "Go (learning)", "SQL", "Bash"],
+  },
+  {
+    label: "Backend",
+    accent: "mint",
+    skills: ["Node.js", "Express.js", "FastAPI", "REST APIs", "JWT Auth", "WebSockets"],
+  },
+  {
+    label: "Frontend",
+    accent: "blush",
+    skills: ["React", "Next.js", "Tailwind CSS", "HTML5", "CSS3", "shadcn/ui"],
+  },
+  {
+    label: "Databases",
+    accent: "sky",
+    skills: ["PostgreSQL", "MongoDB", "Redis", "Prisma ORM", "Supabase", "Firebase"],
+  },
+  {
+    label: "DevOps & Cloud",
+    accent: "lemon",
+    skills: ["Docker", "GitHub Actions", "Vercel", "AWS (basics)", "Nginx", "Linux"],
+  },
+  {
+    label: "Tools",
+    accent: "peach",
+    skills: ["Git", "Postman", "Figma", "VS Code", "Notion", "Jira"],
+  },
+];
+
+const accentMap: Record<string, string> = {
+  lavender: "tag-lavender",
+  mint: "tag-mint",
+  peach: "tag-peach",
+  blush: "tag-blush",
+  sky: "tag-sky",
+  lemon: "tag-lemon",
+};
+
+const marqueeSkills = [
+  "Python", "TypeScript", "React", "Node.js", "PostgreSQL", "Docker",
+  "Next.js", "MongoDB", "FastAPI", "Redis", "Prisma", "Tailwind",
+  "Go", "GitHub Actions", "REST APIs", "Supabase", "AWS", "Nginx",
+];
 
 export default function Skills() {
-  const [selectedCategory, setSelectedCategory] = useState<string>("All");
+  const [active, setActive] = useState(0);
+  const sectionRef = useRef<HTMLElement>(null);
 
-  const iconMap: Record<string, React.ReactNode> = {
-    Languages: <Code2 className="h-5 w-5 text-violet-400" />,
-    "Backend & APIs": <Server className="h-5 w-5 text-pink-400" />,
-    Databases: <Database className="h-5 w-5 text-purple-400" />,
-    "CS Fundamentals": <Cpu className="h-5 w-5 text-orange-400" />,
-    "DevOps & Cloud": <Cloud className="h-5 w-5 text-fuchsia-400" />,
-    Frontend: <Layout className="h-5 w-5 text-rose-400" />,
-  };
+  useEffect(() => {
+    const section = sectionRef.current;
+    if (!section) return;
+    const items = section.querySelectorAll<HTMLElement>(".reveal, .reveal-scale");
+    const obs = new IntersectionObserver(
+      (entries) => entries.forEach((e) => { if (e.isIntersecting) { (e.target as HTMLElement).classList.add("visible"); obs.unobserve(e.target); } }),
+      { threshold: 0.05, rootMargin: "0px 0px -20px 0px" }
+    );
+    items.forEach((el) => obs.observe(el));
+    return () => obs.disconnect();
+  }, []);
 
-  const categories = ["All", ...portfolioData.skillCategories.map((c) => c.category)];
-
-  const filteredCategories =
-    selectedCategory === "All"
-      ? portfolioData.skillCategories
-      : portfolioData.skillCategories.filter((c) => c.category === selectedCategory);
+  const cat = categories[active];
 
   return (
-    <section id="skills" className="relative w-full py-20 px-5 sm:px-10">
-      <div className="mx-auto max-w-6xl">
-        {/* Section Header */}
-        <div className="mb-12 text-center">
-          <h2 className="text-xs sm:text-sm font-semibold uppercase tracking-[0.2em] text-violet-400">
-            Technical Arsenal
+    <section id="skills" ref={sectionRef} className="py-28 overflow-hidden">
+      <div className="px-5 max-w-6xl mx-auto">
+        {/* Header */}
+        <div className="reveal mb-14">
+          <span className="section-label tag-mint rounded-full px-3 py-1 inline-block mb-4">Skills</span>
+          <h2 className="text-4xl md:text-5xl font-bold tracking-tight">
+            Tech <span className="text-gradient-mint">Stack</span>
           </h2>
-          <h3 className="mt-2 text-3xl sm:text-4xl lg:text-5xl font-extrabold text-white">
-            Skills &amp; <span className="gradient-text-vibrant">Core Competencies</span>
-          </h3>
-          <p className="mt-3 max-w-2xl mx-auto text-sm sm:text-base text-zinc-400">
-            A verified inventory of technologies, frameworks, databases, and computer science foundations from my resume.
-          </p>
         </div>
 
-        {/* Filter Pill Tabs */}
-        <div className="mb-10 flex flex-wrap items-center justify-center gap-2">
-          {categories.map((cat) => (
+        {/* Tabs */}
+        <div className="reveal flex flex-wrap gap-2 mb-8">
+          {categories.map((c, i) => (
             <button
-              key={cat}
-              onClick={() => setSelectedCategory(cat)}
-              className={`rounded-full px-4 py-2 text-xs font-semibold transition-all duration-200 ${
-                selectedCategory === cat
-                  ? "bg-gradient-to-r from-purple-600 via-pink-600 to-orange-500 text-white shadow-[0_0_20px_-3px_rgba(217,70,239,0.4)]"
-                  : "glass-card text-zinc-400 hover:border-white/20 hover:text-white"
+              key={c.label}
+              onClick={() => setActive(i)}
+              className={`px-4 py-2 rounded-full text-sm font-medium transition-all duration-300 ${
+                active === i
+                  ? `${accentMap[c.accent]} scale-105`
+                  : "glass text-white/45 hover:text-white/70"
               }`}
             >
-              {cat}
+              {c.label}
             </button>
           ))}
         </div>
 
-        {/* Skills Grid */}
-        <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
-          {filteredCategories.map((catGroup) => (
+        {/* Skills grid */}
+        <div className="reveal-scale visible grid grid-cols-2 sm:grid-cols-3 gap-3 min-h-[200px]">
+          {cat.skills.map((sk, i) => (
             <div
-              key={catGroup.category}
-              className="glass-card glass-card-hover group relative rounded-3xl p-6 border border-white/10 transition-all duration-300"
+              key={sk}
+              className={`glass-pastel rounded-xl px-5 py-4 flex items-center gap-3 card-hover reveal delay-${Math.min(i + 1, 6)}`}
+              style={{ transitionDelay: `${i * 0.06}s` }}
             >
-              {/* Card Header */}
-              <div className="flex items-center justify-between border-b border-white/10 pb-4 mb-5">
-                <div className="flex items-center gap-3">
-                  <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-white/5 border border-white/10">
-                    {iconMap[catGroup.category] || <Layers className="h-5 w-5 text-purple-400" />}
-                  </div>
-                  <div>
-                    <h4 className="text-base font-bold text-white group-hover:text-purple-300 transition">
-                      {catGroup.category}
-                    </h4>
-                    <span className="text-[11px] text-zinc-500 font-medium">
-                      {catGroup.skills.length} competencies
-                    </span>
-                  </div>
-                </div>
-              </div>
-
-              {/* Skills Tag Cloud */}
-              <div className="flex flex-wrap gap-2.5">
-                {catGroup.skills.map((skill) => (
-                  <div
-                    key={skill}
-                    className="flex items-center gap-1.5 rounded-xl border border-white/10 bg-white/[0.03] px-3 py-1.5 text-xs font-medium text-zinc-200 transition-all duration-200 hover:border-pink-500/40 hover:bg-pink-500/10 hover:text-white"
-                  >
-                    <CheckCircle2 className="h-3 w-3 text-pink-400/80" />
-                    <span>{skill}</span>
-                  </div>
-                ))}
-              </div>
+              <div
+                className="w-2 h-2 rounded-full flex-shrink-0"
+                style={{ background: `var(--${cat.accent})` }}
+              />
+              <span className="text-sm font-medium text-white/80">{sk}</span>
             </div>
           ))}
+        </div>
+      </div>
+
+      {/* Marquee strip */}
+      <div className="mt-20 relative">
+        <div className="absolute inset-y-0 left-0 w-20 z-10 pointer-events-none"
+          style={{ background: "linear-gradient(to right, #0A0A0F, transparent)" }} />
+        <div className="absolute inset-y-0 right-0 w-20 z-10 pointer-events-none"
+          style={{ background: "linear-gradient(to left, #0A0A0F, transparent)" }} />
+        <div className="overflow-hidden py-4">
+          <div className="marquee-track">
+            {[...marqueeSkills, ...marqueeSkills].map((sk, i) => (
+              <span
+                key={i}
+                className="inline-flex items-center gap-2 mx-4 glass-pastel rounded-full px-5 py-2 text-sm font-mono text-white/40"
+              >
+                <span className="w-1.5 h-1.5 rounded-full bg-[#C4B5FD] opacity-60" />
+                {sk}
+              </span>
+            ))}
+          </div>
         </div>
       </div>
     </section>

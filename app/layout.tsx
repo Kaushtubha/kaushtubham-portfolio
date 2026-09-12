@@ -1,38 +1,29 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-});
-
 export const metadata: Metadata = {
-  title: "Kaushtubham Shukla | SDE & Backend Engineer",
-  description: "Portfolio of Kaushtubham Shukla — Backend-focused Software Engineer specializing in Java, Spring Boot, distributed job scheduling, and AI-integrated systems.",
-  icons: {
-    icon: "/favicon.ico",
+  title: "Kaushtubham Shukla — SDE & Backend Engineer",
+  description:
+    "Portfolio of Kaushtubham Shukla — B.Tech CSE @ UPES | Backend Engineer, Full Stack Developer, Product Builder. Prev: Zidio Development.",
+  openGraph: {
+    title: "Kaushtubham Shukla — SDE & Backend Engineer",
+    description: "Backend Engineer, Full Stack Developer, Product Builder.",
+    type: "website",
   },
 };
 
-export default function RootLayout({
-  children,
-}: Readonly<{
-  children: React.ReactNode;
-}>) {
+export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html
       lang="en"
-      className={`${geistSans.variable} ${geistMono.variable} dark h-full antialiased scroll-smooth`}
+      className="dark scroll-smooth"
+      suppressHydrationWarning
     >
-      <body className="min-h-full flex flex-col bg-[#07070b] text-slate-100 selection:bg-pink-500/30 selection:text-white">
-        {children}
-      </body>
+      <head>
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+      </head>
+      <body className="antialiased">{children}</body>
     </html>
   );
 }

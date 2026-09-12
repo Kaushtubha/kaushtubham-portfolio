@@ -1,140 +1,223 @@
 "use client";
-
-import { useState, useEffect } from "react";
+import { useEffect, useRef } from "react";
 import Image from "next/image";
-import { ArrowDown, Terminal } from "lucide-react";
-import { portfolioData } from "../data/portfolioData";
-import CommandTerminal from "./CommandTerminal";
+import { useParallax } from "../hooks/useScrollReveal";
+
+const roles = ["Backend Engineer", "SDE", "Product Builder", "Open Source"];
 
 export default function Hero() {
-  const [terminalOpen, setTerminalOpen] = useState(false);
+  const subtitleRef = useRef<HTMLSpanElement>(null);
+  const parallaxBg  = useParallax(0.25);
 
+  /* — Rotating subtitle — */
   useEffect(() => {
-    const handleKeyDown = (e: KeyboardEvent) => {
-      if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === "k") {
-        e.preventDefault();
-        setTerminalOpen((prev) => !prev);
-      }
+    let idx = 0;
+    const el = subtitleRef.current;
+    if (!el) return;
+    const cycle = () => {
+      el.style.opacity = "0";
+      el.style.transform = "translateY(10px)";
+      setTimeout(() => {
+        idx = (idx + 1) % roles.length;
+        el.textContent = roles[idx];
+        el.style.transition = "opacity 0.5s, transform 0.5s";
+        el.style.opacity = "1";
+        el.style.transform = "translateY(0)";
+      }, 350);
     };
-    window.addEventListener("keydown", handleKeyDown);
-    return () => window.removeEventListener("keydown", handleKeyDown);
+    const id = setInterval(cycle, 2800);
+    return () => clearInterval(id);
   }, []);
 
   return (
     <section
       id="hero"
-      className="relative flex min-h-screen w-full flex-col items-center justify-center overflow-hidden px-5 pt-28 pb-16 sm:px-10"
+      className="relative min-h-screen flex items-center justify-center overflow-hidden"
     >
-      {/* Interactive Command Terminal */}
-      <CommandTerminal isOpen={terminalOpen} onClose={() => setTerminalOpen(false)} />
-
-      {/* Background Spotlights (Violet / Magenta / Peach) */}
-      <div className="pointer-events-none absolute inset-0 z-0 overflow-hidden">
-        <div className="absolute -left-20 -top-40 h-[600px] w-[600px] rounded-full bg-gradient-to-tr from-purple-700/25 via-violet-600/15 to-transparent blur-[140px] animate-aurora" />
-        <div className="absolute right-0 top-10 h-[550px] w-[550px] rounded-full bg-gradient-to-bl from-pink-600/20 via-magenta-600/15 to-transparent blur-[150px] animate-aurora" />
-        <div className="absolute left-1/3 bottom-10 h-[380px] w-[380px] rounded-full bg-gradient-to-t from-orange-500/15 via-pink-500/10 to-transparent blur-[130px]" />
-
-        {/* Subtle Cybernetic Grid Pattern */}
-        <div className="absolute inset-0 bg-[linear-gradient(to_right,#ffffff05_1px,transparent_1px),linear-gradient(to_bottom,#ffffff05_1px,transparent_1px)] bg-[size:4rem_4rem] [mask-image:radial-gradient(ellipse_60%_50%_at_50%_45%,#000_70%,transparent_100%)]" />
+      {/* Ambient blob background */}
+      <div ref={parallaxBg} className="absolute inset-0 pointer-events-none select-none -z-10">
+        <div
+          className="blob-1 absolute top-1/4 left-1/4 w-[500px] h-[500px] rounded-full opacity-[0.07]"
+          style={{ background: "radial-gradient(circle, #C4B5FD, transparent 70%)", filter: "blur(60px)" }}
+        />
+        <div
+          className="blob-2 absolute bottom-1/4 right-1/4 w-[420px] h-[420px] rounded-full opacity-[0.06]"
+          style={{ background: "radial-gradient(circle, #F9A8D4, transparent 70%)", filter: "blur(60px)" }}
+        />
+        <div
+          className="blob-3 absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[300px] h-[300px] rounded-full opacity-[0.04]"
+          style={{ background: "radial-gradient(circle, #6EE7B7, transparent 70%)", filter: "blur(50px)" }}
+        />
       </div>
 
-      {/* Hero Content Container */}
-      <div className="relative z-10 mx-auto flex max-w-5xl flex-col items-center text-center">
-        {/* Authentic Profile Photo with Animated Conic Gradient Ring */}
-        <div className="relative mb-6 flex items-center justify-center">
-          <div className="relative h-28 w-28 sm:h-32 sm:w-32 rounded-full p-[2.5px]">
-            <div className="absolute inset-0 rounded-full animate-spin-slow bg-[conic-gradient(from_90deg_at_50%_50%,#a855f7_0%,#ec4899_50%,#fb923c_100%)] blur-[1px]" />
-            <div className="relative h-full w-full rounded-full overflow-hidden border-2 border-[#07070b] bg-[#0c0a18]">
-              <Image
-                src="/kaushtubham.jpg"
-                alt="Kaushtubham Shukla"
-                width={128}
-                height={128}
-                priority
-                className="h-full w-full object-cover object-top hover:scale-110 transition duration-500"
+      <div className="max-w-6xl mx-auto px-5 pt-28 pb-20 grid lg:grid-cols-2 gap-16 items-center">
+        {/* ── Left: Text ── */}
+        <div>
+          {/* Label */}
+          <div
+            className="inline-flex items-center gap-2 tag-lavender rounded-full px-4 py-1.5 mb-7"
+            style={{ animationDelay: "0.1s" }}
+          >
+            <span className="w-2 h-2 rounded-full bg-[#6EE7B7] animate-pulse" />
+            <span className="section-label text-[#C4B5FD]">Available for opportunities</span>
+          </div>
+
+          {/* Headline */}
+          <div className="overflow-hidden mb-2">
+            <h1
+              className="kinetic-text text-5xl md:text-6xl xl:text-7xl font-bold leading-[1.05] tracking-tight"
+              style={{ animationDelay: "0.2s" }}
+            >
+              Kaushtubham
+            </h1>
+          </div>
+          <div className="overflow-hidden mb-5">
+            <h1
+              className="kinetic-text text-5xl md:text-6xl xl:text-7xl font-bold leading-[1.05] tracking-tight text-gradient"
+              style={{ animationDelay: "0.38s" }}
+            >
+              Shukla
+            </h1>
+          </div>
+
+          {/* Rotating subtitle */}
+          <div className="flex items-center gap-3 mb-7 h-8">
+            <div className="w-6 h-px bg-gradient-to-r from-[#C4B5FD] to-[#F9A8D4]" />
+            <span
+              ref={subtitleRef}
+              className="text-lg font-medium text-gradient"
+              style={{ opacity: 1, transition: "opacity 0.5s, transform 0.5s" }}
+            >
+              {roles[0]}
+            </span>
+          </div>
+
+          {/* Bio */}
+          <p
+            className="text-white/55 text-base leading-relaxed max-w-lg mb-10 kinetic-text"
+            style={{ animationDelay: "0.55s" }}
+          >
+            B.Tech CSE student at UPES Dehradun — building scalable backends,
+            crafting great products, and shipping things that matter.
+            Prev: Zidio Development · Intern @ multiple startups.
+          </p>
+
+          {/* CTAs */}
+          <div
+            className="flex flex-wrap gap-4 kinetic-text"
+            style={{ animationDelay: "0.72s" }}
+          >
+            {/* Primary CTA with conic border */}
+            <div className="relative inline-block group">
+              <div
+                className="conic-spin absolute inset-0 rounded-full opacity-60"
+                style={{
+                  background: "conic-gradient(from 0deg, #C4B5FD, #F9A8D4, #FCA5A5, #FDE68A, #6EE7B7, #BAE6FD, #C4B5FD)",
+                  padding: "1.5px",
+                  borderRadius: "9999px",
+                }}
               />
+              <a
+                href="#projects"
+                className="relative z-10 flex items-center gap-2 bg-[#0A0A0F] hover:bg-[#0f0f17] text-white font-semibold text-sm px-6 py-3 rounded-full transition-colors"
+              >
+                View Projects
+                <svg className="w-4 h-4 group-hover:translate-x-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3" />
+                </svg>
+              </a>
             </div>
-            {/* Active Status Beacon */}
-            <div className="absolute bottom-1 right-1 flex h-5 w-5 items-center justify-center rounded-full bg-[#07070b] border-2 border-emerald-500 shadow-md">
-              <span className="h-2 w-2 rounded-full bg-emerald-400 animate-pulse" />
-            </div>
+
+            <a
+              href="/KaushtubhamShukla_Resume.pdf"
+              target="_blank"
+              className="flex items-center gap-2 glass-pastel text-white/80 hover:text-white font-medium text-sm px-6 py-3 rounded-full transition-all hover:border-[rgba(196,181,253,0.4)]"
+            >
+              <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+              </svg>
+              Resume
+            </a>
+          </div>
+
+          {/* Social links */}
+          <div
+            className="flex items-center gap-5 mt-9 kinetic-text"
+            style={{ animationDelay: "0.9s" }}
+          >
+            {[
+              { href: "https://github.com/Kaushtubha", icon: "GitHub", label: "GH" },
+              { href: "https://linkedin.com/in/kaushtubham-shukla", icon: "LI", label: "LI" },
+              { href: "mailto:kaushtubhamshukla@gmail.com", icon: "✉", label: "Mail" },
+            ].map(({ href, label }) => (
+              <a
+                key={label}
+                href={href}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-xs font-mono text-white/40 hover:text-[#C4B5FD] transition-colors"
+              >
+                {label}
+              </a>
+            ))}
+            <span className="ml-auto text-xs font-mono text-white/20">© 2025</span>
           </div>
         </div>
 
-        {/* Status Pill */}
-        <div className="mb-5 inline-flex items-center gap-2 rounded-full border border-purple-500/30 bg-purple-950/40 px-4 py-1.5 backdrop-blur-xl shadow-[0_0_15px_-3px_rgba(168,85,247,0.3)]">
-          <span className="relative flex h-2 w-2">
-            <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-75" />
-            <span className="relative inline-flex h-2 w-2 rounded-full bg-emerald-500" />
-          </span>
-          <span className="text-xs font-semibold tracking-wider uppercase text-purple-200">
-            Open for Software Engineering Internships &amp; Roles
-          </span>
-        </div>
-
-        {/* Dynamic Positioning Badge */}
-        <h2 className="mb-4 text-xs sm:text-sm font-semibold uppercase tracking-[0.25em] text-pink-300/90">
-          Java &bull; Spring Boot &bull; Distributed Systems &bull; AI Pipelines
-        </h2>
-
-        {/* Main Headline */}
-        <h1 className="max-w-4xl text-4xl sm:text-6xl lg:text-7xl font-extrabold tracking-tight leading-[1.1] text-white">
-          Architecting{" "}
-          <span className="gradient-text-vibrant">
-            Scalable Backend Systems
-          </span>{" "}
-          &amp; Intelligent Applications.
-        </h1>
-
-        {/* Intro Paragraph */}
-        <p className="mt-6 max-w-2xl text-base sm:text-lg text-zinc-300 leading-relaxed font-normal">
-          Hi, I&apos;m <span className="text-white font-semibold">{portfolioData.personal.name}</span>, a backend-focused software engineering student graduating in 2027 from{" "}
-          <span className="text-purple-300">VIT Bhopal University</span>. Experienced in engineering production-grade distributed schedulers, Redis coordination layers, and real-time computer vision systems.
-        </p>
-
-        {/* CTA Buttons Row */}
-        <div className="mt-10 flex flex-wrap items-center justify-center gap-4 sm:gap-6">
-          {/* Primary CTA: Conic Gradient Border */}
-          <a
-            href="#projects"
-            className="group relative inline-flex h-13 w-full sm:w-56 overflow-hidden rounded-xl p-[1px] focus:outline-none transition hover:scale-[1.02]"
-          >
-            <span className="absolute inset-[-1000%] animate-spin-slow bg-[conic-gradient(from_90deg_at_50%_50%,#a855f7_0%,#ec4899_50%,#fb923c_100%)]" />
-            <span className="inline-flex h-full w-full cursor-pointer items-center justify-center gap-2 rounded-xl bg-[#0d0a18] px-6 text-sm font-semibold text-white backdrop-blur-3xl transition group-hover:bg-[#150f28]">
-              <span>Explore Projects</span>
-              <ArrowDown className="h-4 w-4 text-pink-400 transition group-hover:translate-y-1" />
-            </span>
-          </a>
-
-          {/* Interactive Terminal Trigger CTA */}
-          <button
-            onClick={() => setTerminalOpen(true)}
-            className="inline-flex h-13 w-full sm:w-56 items-center justify-center gap-2 rounded-xl border border-white/15 bg-white/[0.04] px-6 text-sm font-medium text-zinc-200 backdrop-blur-xl transition hover:border-purple-500/50 hover:bg-white/[0.08] hover:text-white"
-          >
-            <Terminal className="h-4 w-4 text-purple-400" />
-            <span>Interactive Terminal</span>
-            <span className="hidden sm:inline text-[10px] text-zinc-500 font-mono border border-white/10 rounded px-1 py-0.5">
-              ⌘K
-            </span>
-          </button>
-        </div>
-
-        {/* Metrics / Key Stats Strip */}
-        <div className="mt-16 grid w-full max-w-4xl grid-cols-2 gap-4 sm:grid-cols-4 sm:gap-6">
-          {portfolioData.stats.map((stat, idx) => (
+        {/* ── Right: Profile Photo ── */}
+        <div
+          className="flex justify-center lg:justify-end kinetic-text"
+          style={{ animationDelay: "0.4s" }}
+        >
+          <div className="relative w-72 h-72 md:w-80 md:h-80 xl:w-96 xl:h-96">
+            {/* Conic gradient ring */}
             <div
-              key={idx}
-              className="glass-card rounded-2xl p-4 sm:p-5 text-center transition-all duration-300 hover:border-purple-500/40 hover:-translate-y-1"
-            >
-              <div className="text-2xl sm:text-3xl font-extrabold gradient-text-vibrant tracking-tight">
-                {stat.value}
-              </div>
-              <div className="mt-1 text-xs sm:text-sm font-medium text-zinc-400">
-                {stat.label}
-              </div>
+              className="conic-spin absolute inset-[-3px] rounded-full"
+              style={{
+                background:
+                  "conic-gradient(from 0deg, #C4B5FD, #F9A8D4, #FCA5A5, #FDE68A, #6EE7B7, #BAE6FD, #C4B5FD)",
+              }}
+            />
+            {/* Glow */}
+            <div
+              className="blob-1 absolute inset-0 rounded-full opacity-30"
+              style={{
+                background: "radial-gradient(circle at 30% 30%, rgba(196,181,253,0.5), transparent 70%)",
+                filter: "blur(20px)",
+              }}
+            />
+            {/* Photo */}
+            <div className="absolute inset-[3px] rounded-full overflow-hidden bg-[#0F0F17]">
+              <Image
+                src="/kaushtubham.jpg"
+                alt="Kaushtubham Shukla"
+                fill
+                className="object-cover object-top"
+                priority
+              />
             </div>
-          ))}
+
+            {/* Floating badge: CGPA */}
+            <div
+              className="absolute -bottom-4 -left-4 glass-pastel rounded-xl px-4 py-2.5 text-center glow-pulse"
+            >
+              <div className="text-xl font-bold text-gradient">8.79</div>
+              <div className="text-xs text-white/40 font-mono">CGPA</div>
+            </div>
+
+            {/* Floating badge: YOE */}
+            <div className="absolute -top-4 -right-4 glass-pastel rounded-xl px-4 py-2.5 text-center">
+              <div className="text-xl font-bold text-gradient-mint">3+</div>
+              <div className="text-xs text-white/40 font-mono">Internships</div>
+            </div>
+          </div>
         </div>
+      </div>
+
+      {/* Scroll hint */}
+      <div className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 opacity-40">
+        <span className="text-[10px] font-mono tracking-widest text-white/40 uppercase">Scroll</span>
+        <div className="w-px h-10 bg-gradient-to-b from-[#C4B5FD] to-transparent" />
       </div>
     </section>
   );
