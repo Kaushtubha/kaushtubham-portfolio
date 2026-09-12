@@ -1,26 +1,261 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --bg-obsidian: #07070b;
+  --bg-card: rgba(14, 12, 22, 0.75);
+  --bg-card-hover: rgba(22, 18, 36, 0.85);
+  --border-subtle: rgba(255, 255, 255, 0.08);
+  --border-glow: rgba(168, 85, 247, 0.3);
+  
+  --color-violet: #8b5cf6;
+  --color-purple: #a855f7;
+  --color-magenta: #d946ef;
+  --color-pink: #ec4899;
+  --color-peach: #fb923c;
+  --color-orange: #f97316;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+html {
+  scroll-behavior: smooth;
+  color-scheme: dark;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background-color: var(--bg-obsidian);
+  color: #f8fafc;
+  font-feature-settings: "cv02", "cv03", "cv04", "cv11";
+  overflow-x: hidden;
+  selection-background-color: #d946ef;
+  selection-color: #ffffff;
+}
+
+::selection {
+  background-color: rgba(217, 70, 239, 0.35);
+  color: #ffffff;
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 7px;
+}
+::-webkit-scrollbar-track {
+  background: #07070b;
+}
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, #8b5cf6, #ec4899);
+  border-radius: 9999px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(180deg, #a855f7, #f97316);
+}
+
+/* Glassmorphism Classes */
+.glass-card {
+  background: rgba(14, 12, 24, 0.72);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.09);
+  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+}
+
+.glass-card-hover {
+  transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.glass-card-hover:hover {
+  border-color: rgba(217, 70, 239, 0.35);
+  box-shadow: 0 16px 40px -10px rgba(168, 85, 247, 0.25), 0 0 20px -2px rgba(236, 72, 153, 0.2);
+  transform: translateY(-3px);
+}
+
+.glass-nav {
+  background: rgba(8, 7, 14, 0.75);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  box-shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.5);
+}
+
+/* Text Gradients */
+.gradient-text-vibrant {
+  background: linear-gradient(135deg, #c084fc 0%, #ec4899 50%, #fb923c 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.gradient-text-purple {
+  background: linear-gradient(135deg, #a855f7 0%, #d946ef 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.gradient-text-peach {
+  background: linear-gradient(135deg, #f43f5e 0%, #fb923c 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* Spotlight Animations */
+@keyframes spotlight {
+  0% {
+    opacity: 0;
+    transform: translate(-72%, -62%) scale(0.5);
+  }
+  100% {
+    opacity: 1;
+    transform: translate(-50%, -40%) scale(1);
+  }
+}
+
+.animate-spotlight {
+  animation: spotlight 2s ease .75s 1 forwards;
+}
+
+/* Conic Spin Border Animation */
+@keyframes spinSlow {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.animate-spin-slow {
+  animation: spinSlow 4s linear infinite;
+}
+
+/* Radar Pulse / Pin Rings */
+@keyframes radarPing {
+  0% {
+    transform: scale(0.6);
+    opacity: 0.8;
+  }
+  50% {
+    opacity: 0.3;
+  }
+  100% {
+    transform: scale(1.6);
+    opacity: 0;
+  }
+}
+
+.animate-radar-1 {
+  animation: radarPing 3s cubic-bezier(0, 0.2, 0.8, 1) infinite;
+}
+
+.animate-radar-2 {
+  animation: radarPing 3s cubic-bezier(0, 0.2, 0.8, 1) infinite 1s;
+}
+
+.animate-radar-3 {
+  animation: radarPing 3s cubic-bezier(0, 0.2, 0.8, 1) infinite 2s;
+}
+
+/* Moving Border Beam */
+@keyframes borderBeam {
+  0% {
+    offset-distance: 0%;
+  }
+  100% {
+    offset-distance: 100%;
+  }
+}
+
+/* Subtle Floating Animation */
+@keyframes floatSlow {
+  0%, 100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-8px);
+  }
+}
+
+.animate-float {
+  animation: floatSlow 6s ease-in-out infinite;
+}
+
+/* Aurora Glow Pulsing */
+@keyframes auroraPulse {
+  0%, 100% {
+    opacity: 0.45;
+    transform: scale(1) translate(0, 0);
+  }
+  50% {
+    opacity: 0.7;
+    transform: scale(1.08) translate(15px, -15px);
+  }
+}
+
+.animate-aurora {
+  animation: auroraPulse 10s ease-in-out infinite alternate;
+}
+
+/* Custom Cursor Styles */
+.custom-cursor-dot {
+  pointer-events: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 8px;
+  height: 8px;
+  background-color: #ec4899;
+  border-radius: 50%;
+  z-index: 99999;
+  transform: translate(-50%, -50%);
+  transition: transform 0.05s ease-out;
+  box-shadow: 0 0 10px #ec4899, 0 0 20px #a855f7;
+}
+
+.custom-cursor-ring {
+  pointer-events: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 36px;
+  height: 36px;
+  border: 1.5px solid rgba(217, 70, 239, 0.55);
+  border-radius: 50%;
+  z-index: 99998;
+  transform: translate(-50%, -50%);
+  transition: width 0.25s cubic-bezier(0.16, 1, 0.3, 1), 
+              height 0.25s cubic-bezier(0.16, 1, 0.3, 1), 
+              background-color 0.25s ease, 
+              border-color 0.25s ease;
+  box-shadow: 0 0 15px rgba(168, 85, 247, 0.2);
+}
+
+.custom-cursor-ring.cursor-hover {
+  width: 58px;
+  height: 58px;
+  background-color: rgba(168, 85, 247, 0.12);
+  border-color: rgba(251, 146, 60, 0.8);
+}
+
+/* Hide cursor elements on touch devices */
+@media (hover: none) and (pointer: coarse) {
+  .custom-cursor-dot,
+  .custom-cursor-ring {
+    display: none !important;
+  }
+}
+
+/* Respect user's reduced-motion preference */
+@media (prefers-reduced-motion: reduce) {
+  *, ::before, ::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+  .animate-spotlight,
+  .animate-spin-slow,
+  .animate-radar-1,
+  .animate-radar-2,
+  .animate-radar-3,
+  .animate-float,
+  .animate-aurora {
+    animation: none !important;
+  }
 }
